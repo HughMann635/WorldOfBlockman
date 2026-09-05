@@ -121,10 +121,10 @@ public:
             if (starlist.size() > 0) {
                 for (auto& pos: starlist) {
                     while (pos.star.getGlobalBounds().findIntersection(star.star.getGlobalBounds())) {
+                        star.star.setPosition(sf::Vector2f((std::rand() % width)*1.2, (std::rand() % 520)*1.2));
                         if (!pos.star.getGlobalBounds().findIntersection(star.star.getGlobalBounds())) {
                             break;
                         }
-                        star.star.setPosition(sf::Vector2f((std::rand() % width)*1.2, (std::rand() % 520)*1.2));
                     }
                 }
             } 
@@ -143,21 +143,24 @@ public:
             planet.planet.setRadius(radius);
             planet.planet.setOrigin(sf::Vector2f(radius, radius));
             planet.planet.setPosition(sf::Vector2f((std::rand() % width) * 1.1 + 20, (std::rand() % 520) + 20));
-            if (starlist.size() > 0) {
+            if (planetlist.size() > 0) {
                 for (auto& pos: planetlist) {
                     while (pos.planet.getGlobalBounds().findIntersection(planet.planet.getGlobalBounds())) {
+                        planet.planet.setPosition(sf::Vector2f(std::rand() % width + 20, (std::rand() % 520) + 20));
                         if (!pos.planet.getGlobalBounds().findIntersection(planet.planet.getGlobalBounds())) {
                             break;
                         }
-                        planet.planet.setPosition(sf::Vector2f(std::rand() % width + 20, (std::rand() % 520) + 20));
                     }
                 }
             }
+             
             planet.planet.setFillColor(sf::Color(std::rand() % 50 + 95, std::rand() % 50 + 95, std::rand() % 50 + 95));
-            
+            planet.planet.setOutlineColor(sf::Color(planet.planet.getFillColor().r - 50, planet.planet.getFillColor().g - 50, planet.planet.getFillColor().b - 50));
+            planet.planet.setOutlineThickness(1);
+
             if (std::rand() % 5 > 1) {
-                planet.ring_back = makeplanetrings(radius*1.4, std::rand() % 1 + 2, 180, 360, sf::Color(170, 100, 80));
-                planet.ring_front = makeplanetrings(radius*1.4, std::rand() % 1 + 2, 0, 180, sf::Color(170, 100, 80));
+                planet.ring_back = makeplanetrings(radius*1.4, std::rand() % 2 + 2, 180, 360, sf::Color(170, 100, 80));
+                planet.ring_front = makeplanetrings(radius*1.4, std::rand() % 2 + 2, 0, 180, sf::Color(170, 100, 80));
                 planet.ring_angle = std::rand() % 40 - 20;
             }
 
@@ -210,8 +213,8 @@ public:
                 float variance = radius * (60 + std::rand() % 80) / 100.f;
                 rock.rock.setPoint(i, sf::Vector2f(std::cos(angle)*variance, std::sin(angle)*variance));
             }
-            int rockshade = 60 + std::rand() % 40;
-            rock.rock.setFillColor(sf::Color(rockshade, rockshade, rockshade));
+            int rockshade = 30 + std::rand() % 40;
+            rock.rock.setFillColor(sf::Color(rockshade+(std::rand() % 4 * 10), rockshade, rockshade));
             rock.rock.setOutlineColor(sf::Color(rockshade/2, rockshade/2, rockshade/2));
             rock.rock.setOutlineThickness(-1);
             rock.pos = sf::Vector2f(20 + std::rand() % 1240, 20 + std::rand() % 680);
@@ -230,6 +233,7 @@ public:
             bh.bh.setOrigin(sf::Vector2f(bh.bh.getRadius(), bh.bh.getRadius()));
             bh.pos = sf::Vector2f(50 + std::rand() % 1180, 50 + std::rand() % 620);
             bh.bh.setPosition(bh.pos);
+
             bh.ring.setRadius(bh.bh.getRadius() * 2);
             bh.ring.setFillColor(sf::Color::Transparent);
             bh.ring.setOutlineColor(sf::Color(240, 170, 0));
@@ -245,11 +249,11 @@ public:
         moon.planet.setFillColor(sf::Color(200, 200, 205));
         moon.planet.setOutlineColor(sf::Color(230, 230, 235, 190));
         moon.planet.setOutlineThickness(3);
-        moon.planet.setOrigin(sf::Vector2f(25, 25));
+        moon.planet.setOrigin(sf::Vector2f(30, 30));
         moon.planet.setPosition(sf::Vector2f(100, 100));
         for (int i = 0; i < std::rand() % 4 + 3; i++) {
             sf::CircleShape crater;
-            crater.setRadius(moon.planet.getRadius()/(std::rand() % 5 + 4));
+            crater.setRadius(moon.planet.getRadius()/(std::rand() % 6 + 4));
             float crateroffset = std::rand() % static_cast<int>(moon.planet.getRadius() * 0.7);
             float craterangle = std::rand() % 360 * (3.14159265358979 / 180);
             crater.setPosition(sf::Vector2f(std::cos(craterangle)*crateroffset, std::sin(craterangle)*crateroffset));
