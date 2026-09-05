@@ -168,6 +168,13 @@ void square::updatepos (float deltatime, tilemap& map) {
     playershape.setPosition(bound);
     swimming = false;
     zerogactive = false;
+
+    if (tp_timer.getElapsedTime().asSeconds() >= 3.f && triangleshade < 255) {
+        triangleshade += 2;
+    }
+    if ((tp_timer.getElapsedTime().asSeconds() < 3.f && tped) && triangleshade > 135) {
+        triangleshade -= 2;
+    }
 }
 
 void square::drawscreen (sf::RenderWindow& window)  {
@@ -261,6 +268,13 @@ void circle::updatepos (float deltatime, tilemap& map)  {
     playershape.setPosition(bound);
     swimming = false;
     zerogactive = false;
+
+    if (tp_timer.getElapsedTime().asSeconds() >= 3.f && triangleshade < 255) {
+        triangleshade += 2;
+    }
+    if ((tp_timer.getElapsedTime().asSeconds() < 3.f && tped) && triangleshade > 135) {
+        triangleshade -= 2;
+    }
 }
 
 void circle::drawscreen (sf::RenderWindow& window)  {
@@ -493,6 +507,13 @@ void hexagon::updatepos (float deltatime, tilemap& map) {
     playershape.setPosition(bound);
     swimming = false;
     zerogactive = false;
+
+    if (tp_timer.getElapsedTime().asSeconds() >= 3.f && triangleshade < 255) {
+        triangleshade += 2;
+    }
+    if ((tp_timer.getElapsedTime().asSeconds() < 3.f && tped) && triangleshade > 135) {
+        triangleshade -= 2;
+    }
 }
 
 void hexagon::drawscreen (sf::RenderWindow& window) {
@@ -641,6 +662,13 @@ void octagon::updatepos (float deltatime, tilemap& map) {
     playershape.setPosition(bound);
     swimming = false;
     zerogactive = false;
+
+    if (tp_timer.getElapsedTime().asSeconds() >= 3.f && triangleshade < 255) {
+        triangleshade += 2;
+    }
+    if ((tp_timer.getElapsedTime().asSeconds() < 3.f && tped) && triangleshade > 135) {
+        triangleshade -= 2;
+    }
 }
 
 void octagon::drawscreen (sf::RenderWindow& window) {
