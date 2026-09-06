@@ -26,6 +26,10 @@ PLANETS: color, circleshape, size, pos
 UPDATE FUNCTION to update pos, brightness...of shapes
 DRAW to draw everything, will do away w/ stars and whatnot.
 
+
+TO DO STILL:
+- black hole particle fx
+- general stuff
 */
 
 struct star {
@@ -45,10 +49,21 @@ struct comet {
     sf::Clock comet_cooldown;
 };
 
+struct bhparticle {
+    float size;
+    float speed_ang;
+    float speed_rad;
+    float dist;
+    float angle;
+    sf::Color color;
+};
+
 struct blackhole_bkgd {
     sf::Vector2f pos;
     sf::CircleShape bh;
     sf::CircleShape ring;
+    std::vector<bhparticle> particlelist;
+    sf::VertexArray particle_drawer {sf::PrimitiveType::Triangles};
 };
 
 struct planet {
@@ -240,6 +255,19 @@ public:
             bh.ring.setOutlineThickness(1);
             bh.ring.setOrigin(sf::Vector2f(bh.ring.getRadius(), bh.ring.getRadius()));
             bh.ring.setPosition(bh.bh.getPosition());
+
+            for (int i = 0; i < 80; i++) {
+                bhparticle particle;
+                particle.dist = bh.bh.getRadius() * (std::rand() % 250 + 150) / 100;
+                particle.angle = (std::rand() % 360) * (3.14159265358979 / 180);
+                particle.speed_rad = 8 + std::rand() % 15;
+                particle.speed_ang = (15 + std::rand() % 20) / 10;
+                particle.size = (10 + std::rand() % 20) / 10;
+                
+                if (std::rand() % 2 == 0) particle.color = sf::Color(255, 180, 50);
+                else particle.color = sf::Color(255, 80, 20);
+                bh.particlelist.push_back(particle);
+            }
             blackholelist.push_back(bh);
         }
     }
@@ -323,6 +351,23 @@ public:
             if (pos.pos.y < -70) pos.pos.y = height + 70;
             if (pos.pos.y > height + 70) pos.pos.y = -70;
         }
+        for (auto& pos: blackholelist) {
+            float eventhorizon = pos.bh.getRadius();
+            for (auto& rest: pos.particlelist) {
+                float speedmulti = (eventhorizon * 3) / std::max(rest.dist, 1.f);
+                rest.angle += rest.speed_ang * speedmulti;
+                rest.dist -= rest.speed_rad * deltatime;
+
+                float alpha = std::min(255.f, (rest.dist - eventhorizon) * 20.f);
+                rest.color.a = std::max(0.f, alpha);
+
+                if (rest.dist <= eventhorizon) {
+                    rest.dist = eventhorizon * 4;
+                    rest.angle = std::rand() % 360 * (3.14159265358979 / 180);
+                    rest.color.a = 255;
+                }
+            }
+        }
     }
 
     void drawsky (sf::RenderWindow& window, sf::Vector2f center) {
@@ -336,6 +381,14 @@ public:
 
         for (auto& pos: blackholelist) {
             window.draw(pos.bh, farparallax);
+            pos.particle_drawer.clear();
+            pos.particle_drawer.setPrimitiveType(sf::PrimitiveType::Points);
+            for (auto& rest: pos.particlelist) {
+                float xpos = pos.pos.x + std::cos(rest.angle) * rest.dist;
+                float ypos = pos.pos.y + std::sin(rest.angle) * rest.dist;
+                pos.particle_drawer.append(sf::Vertex{sf::Vector2f(xpos, ypos), rest.color});
+            }
+            window.draw(pos.particle_drawer, farparallax);
             window.draw(pos.ring, farparallax);
         }
         for (auto& pos: starlist) {
