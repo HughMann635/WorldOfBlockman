@@ -249,7 +249,7 @@ public:
             bh.pos = sf::Vector2f(50 + std::rand() % 1180, 50 + std::rand() % 620);
             bh.bh.setPosition(bh.pos);
 
-            bh.ring.setRadius(bh.bh.getRadius() * 2);
+            bh.ring.setRadius(bh.bh.getRadius() * 4.4);
             bh.ring.setFillColor(sf::Color::Transparent);
             bh.ring.setOutlineColor(sf::Color(240, 170, 0));
             bh.ring.setOutlineThickness(1);
@@ -258,14 +258,15 @@ public:
 
             for (int i = 0; i < 80; i++) {
                 bhparticle particle;
-                particle.dist = bh.bh.getRadius() * (std::rand() % 250 + 150) / 100;
+                particle.dist = bh.bh.getRadius() * (std::rand() % 200 + 100) / 100;
                 particle.angle = (std::rand() % 360) * (3.14159265358979 / 180);
                 particle.speed_rad = 8 + std::rand() % 15;
                 particle.speed_ang = (15 + std::rand() % 20) / 10;
                 particle.size = (10 + std::rand() % 20) / 10;
                 
-                if (std::rand() % 2 == 0) particle.color = sf::Color(255, 180, 50);
-                else particle.color = sf::Color(255, 80, 20);
+                if (std::rand() % 3 == 0) particle.color = sf::Color(255, 180, 50);
+                else if (std::rand() % 3 == 1) particle.color = sf::Color(255, 80, 20);
+                else particle.color = sf::Color(255, 130, 0);
                 bh.particlelist.push_back(particle);
             }
             blackholelist.push_back(bh);
@@ -354,7 +355,7 @@ public:
         for (auto& pos: blackholelist) {
             float eventhorizon = pos.bh.getRadius();
             for (auto& rest: pos.particlelist) {
-                float speedmulti = (eventhorizon * 3) / std::max(rest.dist, 1.f);
+                float speedmulti = (eventhorizon * 3) / std::max(rest.dist, 1.f) * deltatime;
                 rest.angle += rest.speed_ang * speedmulti;
                 rest.dist -= rest.speed_rad * deltatime;
 
