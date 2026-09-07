@@ -106,6 +106,15 @@ class blackhole : public tileTypes {
 public:
     sf::CircleShape blackholeblock;
     sf::CircleShape photonring;
+    struct bhparticle {
+        float speed_rad;
+        float speed_ang;
+        float dist;
+        float angle;
+        sf::Color color;
+    };
+    std::vector<bhparticle> bhparticles;
+    sf::VertexArray particle_drawer {sf::PrimitiveType::Points};
     blackhole(sf::Vector2f position) {
         blackholeblock.setRadius(6);
         blackholeblock.setFillColor(sf::Color::Black);
@@ -115,11 +124,31 @@ public:
         photonring.setOutlineColor(sf::Color(240, 170, 0));
         photonring.setOutlineThickness(-1);
         photonring.setPosition(position-sf::Vector2f(40, 40));
+        sf::Vector2f center = sf::Vector2f(blackholeblock.getPosition() + sf::Vector2f(6, 6));
+        for (int i = 0; i < 220; i++) {
+            bhparticle particle;
+            particle.angle = (std::rand() % 360) / (3.14159265358979 / 180);
+            particle.dist = blackholeblock.getRadius() * (std::rand() % 800 + 100) / 100;
+            particle.speed_rad = 8 + std::rand() % 15;
+            particle.speed_ang = (15 + std::rand() % 20) / 10;
+            switch (std::rand() % 3) {
+                case 0: 
+                particle.color = sf::Color(255, 180, 50);
+                case 1:
+                particle.color = sf::Color(255, 130, 0);
+                case 2:
+                particle.color = sf::Color(255, 80, 20);
+                default: break;
+            }
+            particle_drawer.append(sf::Vertex{sf::Vector2f(center.x + std::cos(particle.angle) * particle.dist, center.y + std::sin(particle.angle) * particle.dist), particle.color});
+            bhparticles.push_back(particle);
+        }
     }
     
     void draw (sf::RenderTarget& window) override {
         window.draw(blackholeblock);
-        window.draw(photonring);
+        window.draw(photonring);    
+        window.draw(particle_drawer);
     }
 
     sf::Shape& collide() override {
