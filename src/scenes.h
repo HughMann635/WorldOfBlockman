@@ -50,7 +50,6 @@ struct comet {
 };
 
 struct bhparticle {
-    float size;
     float speed_ang;
     float speed_rad;
     float dist;
@@ -63,7 +62,7 @@ struct blackhole_bkgd {
     sf::CircleShape bh;
     sf::CircleShape ring;
     std::vector<bhparticle> particlelist;
-    sf::VertexArray particle_drawer {sf::PrimitiveType::Triangles};
+    sf::VertexArray particle_drawer {sf::PrimitiveType::Points};
 };
 
 struct planet {
@@ -262,7 +261,6 @@ public:
                 particle.angle = (std::rand() % 360) * (3.14159265358979 / 180);
                 particle.speed_rad = 8 + std::rand() % 15;
                 particle.speed_ang = (15 + std::rand() % 20) / 10;
-                particle.size = (10 + std::rand() % 20) / 10;
                 
                 if (std::rand() % 3 == 0) particle.color = sf::Color(255, 180, 50);
                 else if (std::rand() % 3 == 1) particle.color = sf::Color(255, 80, 20);
@@ -383,7 +381,6 @@ public:
         for (auto& pos: blackholelist) {
             window.draw(pos.bh, farparallax);
             pos.particle_drawer.clear();
-            pos.particle_drawer.setPrimitiveType(sf::PrimitiveType::Points);
             for (auto& rest: pos.particlelist) {
                 float xpos = pos.pos.x + std::cos(rest.angle) * rest.dist;
                 float ypos = pos.pos.y + std::sin(rest.angle) * rest.dist;
